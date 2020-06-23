@@ -9,6 +9,7 @@ Elastic-stack 사전조사
 ## 2. ELK Stack의 구성요소
 ### 2.1 Elastic search
 * 기능
+   * 확장성이 매우 좋은 오픈소스 검색엔진
    * Lucene 기반의 데이터 검색 및 분석 엔진이다.
    * 대량의 데이터를 신속하고 실시간으로 저장, 검색 및 분석할 수 있다.
    * 데이터를 중심부에 저장하여 예상되는 항목을 검색하고 예상치 못한 항목을 밝혀낼 수 있다.
@@ -16,36 +17,45 @@ Elastic-stack 사전조사
    * 표준 RESTful API와 JSON을 사용한다.
 
 * 개념정리
-1. Near Realtime
+1. full text 검색
+   * 역파일 색인(inverted file index)라는 구조로 데이터를 저장한다. (해당 키워드가 어떤 doc에 있다고 저장한다.)
+2. Near Realtime
    * 거의 실시간 검색 플랫폼이라는 특징을 가지고 있다.
    
-2. Cluster
+3. Cluster
    * 전체 데이터를 함께 보유하고 모든 노드에서 연합 인덱싱 및 검색 기능을 제공하는 하나 이상의 노드모음
-   - 기본적으로 'elasticsearch' 라는 고유한 이름으로 식별
+   - 유일한 이름(unique name)으로 판별(identified) (기본값: 'elasticsearch')
+   - 사용자는 클러스터를 대상으로 데이터를 저장하거나 검색 요청
       
-3. Node
+4. Node
    - 클러스터의 일부이며 데이터를 저장하고 클러스터의 인덱싱 및 검색 기능에 참여하는 단일 서버
    - 노드에 할당되는 임의 UUID인 이름으로 식별
    - 특정 클러스터를 클러스터 이름으로 결합하도록 노드를 구성 할 수 있다.
+   - 역할에 따라 마스터노드(홀수 개 존재)와 데이터, ingest, client 노드로 사용
    
-4. Index
-   - 다소 유사한 특성을 갖는 문서들의 집합
+5. Index
+   - 다소 유사한 특성을 갖는 Document들의 집합
    - 단일 클러스터에서 원하는만큼의 인덱스를 정의 할 수 있다.
+   - RDB의 데이터베이스와 비슷한 개념
+   - Index 내 다수의 Document저장
 
-5. Type
+6. Type
    - Index 내에서 하나 이상의 Type을 정의 할 수 있다.
+   - ElasticSearch 7.x 버전부터는 _ doc로고정
       
-6. Document
-   - Index를 생성 할 수 있는 기본 정보 단위
-   - JSON으로 표현
+7. Document
+   - JSON(Java Script Object Notatoin) 형태의 실제 의미있는 데이터를 가진 Elasticsearch 기본저장단위
+   - Index를 생성
+   - 고유한 문서 ID 보유 (문서 ID는 랜덤&수동 할당되며 문서 데이터를 찾아갈 때 사용)
    
-7. Shards
+8. Shards
    - Index는 잠재적으로 단일 노드의 하드웨어 제한을 초과 할 수 있는 많은 양의 데이터를 저장 할 수 있다. 하지만 단일 노드의 디스크가 맞지 않거나 단일 노드의 검색 요청만 처리하기에는 너무 느릴 수 있기 때문에 shards를 이용하여 Index를 여러 조각으로 나눌 수 있다. 
    - 수평적으로 콘텐츠 볼륨을 split/scale 가능
    - 여러 노드에서 잠재적으로 분산을 통해 작업을 분산 및 병렬 처리를 할 수 있으므로 성능/처리량이 향상
+   - 원본샤드(Primary Shard)와 복제본샤드(Replica Shard)로나뉨
    
 8. Replication
-   - 장애가 발생할 경우 고가용성을 제공 그렇기 때문에 복제본 샤드는 복사된 원본/기본 샤드와 동일한 노드에 할당되지 않는다.
+   - 장애가 발생할 경우 복제본 샤드를 원본 샤드로 승격시켜 사용하기 때문에 복제본 샤드는 복사된 원본/기본 샤드와 동일한 노드에 할당되지 않는다.
    - 모든 복제본에서 검색을 병렬로 실행할 수 있기 때문에 검색 볼륨/처리량을 수평 확장 할 수 있다.
    - 기본적으로 각 인덱스는 4개의 기본 샤드와 1개의 복제본이 할당
 
@@ -80,7 +90,6 @@ Elastic-stack 사전조사
       
 4) codec
    - 입력 또는 출력의 일부로 작동 할 수 있는 스트림 필터
-
    - 대표적인 코덱에는 json, msgpack, plain이 있다.
       - json : JSON 형식의 데이터를 인코딩하거나 디코딩
       - multiline : 자바 예외 및 스택 추척 메시지와 같은 여러 줄 텍스트 이벤트를 단일 이벤트로 병합
@@ -91,16 +100,14 @@ Elastic-stack 사전조사
    
 ### 2.4 Filterbeats
 * 기능
-   * 서버에 경량 에이전트로 설치되어 다양한 유형의 데이터를 Logstash 또는 ElasticSearch로 전송하는 오픈 소스 데이터 발송자
-   * Filebeat, Meticbeat, Packetbeat, Winlogbeat, Heartbeat 등이 있으며 Libbeat을 이용하여 직접 구축도 가능
+   * 서버에 경량 에이전트로 설치되어 다양한 유형의 데이터를 Logstash 또는 ElasticSearch로 전송(스트리밍)하는 오픈 소스 데이터 발송자
+   * Filebeat, Metricbeat, Packetbeat, Winlogbeat, Heartbeat 등이 있으며 Libbeat을 이용하여 직접 구축도 가능
    * 개념정리
 
 1) FileBeat
    - 서버에서 로그파일을 제공
-   
 2) PacketBeat
    - 응용 프로그램 서버간에 교환되는 트랜잭션에 대한 정보를 제공하는 네트워크 패킷 분석기 
-   
 3) MetricBeat
    - 서버에서 실행중인 운영 체제 및 서비스에서 Metrics를 주기적으로 수집하는 서버 모니터링 에이전트
 4) WinlogBeat
