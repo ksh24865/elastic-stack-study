@@ -85,7 +85,7 @@ curl -XPOST http://localhost:9200/classes/class/1/_update -H 'content-Type: appl
 <pre>
 <code>
 curl -XPOST http://localhost:9200/classes/class/1/_update -H 'content-Type: application/json'  -d ' 
-{ "doc":{"unit":2}'
+{ "doc":{"unit":2}}'
  </code>
 </pre>
 
@@ -109,7 +109,8 @@ curl -XPOST http://localhost:9200/classes2/class/1/_update -H 'content-Type: app
 * Action Meta data와 Request Body가 각각 한 쌍씩 묶여 동작한다
 	* Delete는 Action Meta data만 필요하다.
 * 통상적으로 1000~5000개 정도의 작업이 바람직, 10000개 이상의 작업을 배치로 실행하면 오류가 발생할 확률이 높다.
-Bulk Data Example
+
+* Bulk Data Example
 <pre>
 <code>
 { "index" : { "_index" : "test", "_type" : "_doc", "_id" : "1" } } # 반드시 줄 바꿈으로 Meta data와 Body를 구분한다, ~인덱스에 ~타입에 아이디~번에 이하 doc를 넣어라
