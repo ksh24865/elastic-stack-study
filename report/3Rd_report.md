@@ -1,10 +1,10 @@
 ## 1.엘라스틱 서치 데이터 입력 조회 삭제
 |ES|RDB|의미|
 |---|---|---|
-|GET|Select|Index조회
-|PUT|Update|Index생성
+|GET|Select|Index조회|
+|PUT|Update|Index생성|
 |POST|Insert|Doc생성|
-|DELETE|Delete|Index삭제
+|DELETE|Delete|Index삭제|
 
 1. Index 생성 
 
@@ -130,10 +130,15 @@ curl -XPOST localhost:9200/_bulk?pretty --data-binary @classes.json -H 'content-
 
 
 데이터의 포맷을 제대로 지정해주지 않으면 데이터를 관리할때 장애가 발생 
+
 키바나와 효과적으로 연동하기 위해서 효율적인 매핑작업이 반드시 필요
+
 1. Mapping 만들기
+
 1.1. 직접 매핑 작성
+
 1.2. 임시 인덱스를 만들고 그 자동 생성된 매핑을 가져와서 원하는 매핑을 만드는 방법
+
 |필드값|설명|
 |---|--|
 |name|이름|
@@ -141,7 +146,9 @@ curl -XPOST localhost:9200/_bulk?pretty --data-binary @classes.json -H 'content-
 |gender|성별|
 |memo|메모|
 |reg_date|등록일|
+
 위와같은 인덱스를 만든다고 가정
+
 <pre>
 <code>
 PUT imsi_my_test/person/1 
@@ -154,7 +161,9 @@ PUT imsi_my_test/person/1
 }
  </code>
 </pre>
+
 임시인덱스 만들고, 자동 생성된 매핑 가져오기 (GET imsi_my_test/_mapping)
+
 <pre>
 <code>
 {
@@ -242,7 +251,9 @@ GET my_test/_mapping을 통해 매핑여부 확인
 
 
 2. 매핑
+
 * 인덱스 생성 시 매핑이 되어있지 않음 
+
 <pre>
 <code>
 curl -XPUT 'http://localhost:9200/classes?pretty
@@ -250,13 +261,16 @@ curl -XPUT 'http://localhost:9200/classes?pretty
 </pre>
 
 * classes/class/에 매핑 추가
+
 <pre>
 <code>
 curl -XGET 'http://localhost:9200/classes/class/_mapping' -H 'content-Type: application/json' -d @classesRating_mapping.json
  </code>
 </pre>
+
 	* {index}/{type}/_mapping
 		* 매핑
+		
 * 매핑 후 인덱스 추가하면 데이터 포맷 지정됨
 
 
@@ -266,7 +280,8 @@ curl -XGET 'http://localhost:9200/classes/class/_mapping' -H 'content-Type: appl
 
  </code>
 </pre>
-# GET
+# 임시저장 
+## GET
  curl - XGET http://localhost:9200/class
  curl - XGET http://localhost:9200/class?pretty
  curl - XPUT http://localhost:9200/class
