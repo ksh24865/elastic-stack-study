@@ -14,7 +14,7 @@
  curl - XPUT http://localhost:9200/class
  </code>
 </pre>
-	
+
 
 2. Index 조회
 
@@ -24,14 +24,16 @@
  curl - XGET http://localhost:9200/class?pretty
  </code>
 </pre>
-	* ?pretty
-		* 결과를 예쁘게 출력
+
+* ?pretty
+	* 결과를 예쁘게 출력
 		
 3. 데이터 삭제
 
 * Document, Type, Index 단위로 삭제할 수 있다.
 * Index 단위 삭제 후 URL로 접근하면 404반환
 * class이름의 Index 삭제
+
 <pre>
 <code>
  curl - XDELETE http://localhost:9200/class
@@ -50,11 +52,11 @@
  </code>
 </pre>
 
-	* -d 옵션
-		* 추가할 데이터를 json 포맷으로 전달
-	* -H 옵션
-		* 헤더를 명시 json으로 전달하므로 application/json으로 작성
-* 
+* -d 옵션
+	* 추가할 데이터를 json 포맷으로 전달
+* -H 옵션
+	* 헤더를 명시 json으로 전달하므로 application/json으로 작성
+
 4.2. 파일 사용
 * 동일 경로에 oneclass.json파일 입력
 <pre>
@@ -62,8 +64,9 @@
  curl -XPOST http://localhost:9200/classes/class/1/ -d @oneclass.json -H 'content-Type: application/json'
  </code>
 </pre>
-	* @ 옵션
-		* json파일로 데이터 추가
+
+* @ 옵션
+	* json파일로 데이터 추가
 
 ## 2.엘라스틱 서치 데이터 업데이트 
 1. Doc 업데이트
@@ -96,8 +99,8 @@ curl -XPOST http://localhost:9200/classes2/class/1/_update -H 'content-Type: app
  </code>
 </pre>
 
-	* ctx._source
-		* 업데이트하려는 현재 소스 문서
+* ctx._source
+	* 업데이트하려는 현재 소스 문서
 		
 ## 3.엘라스틱 서치 - 벌크(Bulk)
 
@@ -120,14 +123,15 @@ Bulk Data Example
 </pre>
 
 * classes.json 벌크 
+
 <pre>
 <code>
 curl -XPOST localhost:9200/_bulk?pretty --data-binary @classes.json -H 'content-Type: application/json'
  </code>
 </pre>
 
-	*--data-binary @ 파일명
-		* 벌크파일에서 데이터 불러옴
+*--data-binary @ 파일명
+	* 벌크파일에서 데이터 불러옴
 
 ## 4.엘라스틱 서치 - 매핑(Mapping)
 
@@ -214,7 +218,9 @@ PUT imsi_my_test/person/1
 }
  </code>
 </pre>
+
 가져온 후, 만들 인덱스에 생성 
+
 <pre>
 <code>
 PUT my_test/
@@ -276,8 +282,7 @@ curl -XPOST 'localhost:9200/_bulk' --data-binary @simple_basketball.json -H 'con
  </code>
 </pre>
 
-	* {index}/{type}/_mapping
-		* 매핑
+* {index}/{type}/_mapping
 		
 * 매핑 후 인덱스 추가하면 데이터 포맷 지정됨
 
@@ -292,8 +297,8 @@ curl -XGET 'localhost:9200/basketball/record/_search?q=points:30&pretty'.
  </code>
 </pre>
 	
-	*_search 검색작업을 의미하는 API
-	* points:30인 doc search
+*_search 검색작업을 의미하는 API
+* points:30인 doc search
 
 2. SEARCH - REQUEST BODY
 	*json 파일에 쿼리를 작성하여 POST 방식으로 넘기는 방법 ( Query DSL )
@@ -311,7 +316,7 @@ curl -XGET 'localhost:9200/basketball/record/_search?pretty' -H 'content-Type: a
  </code>
 </pre>
 
-	* basketball 인덱스의 record 타입의 points 필드가 30인 결과를 검색
+* basketball 인덱스의 record 타입의 points 필드가 30인 결과를 검색
 	
 
 	
