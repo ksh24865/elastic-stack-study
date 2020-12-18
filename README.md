@@ -43,7 +43,7 @@ Elastic-stack-study
             * 인덱스 매핑에 애널라이저를 적용 할 때 토크나이저, 토큰필터 등을 조합하여 만든 사용자 정의 애널라이저(Custom Analyzer)를 주로 사용
             * 인덱스 settings 의 `"index" : { "analysis" :`  부분에 정의
             * `GET` 또는 `POST <인덱스명>/_analyze` 명령으로 사용이 가능
-            * PUT my_index3 { "settings": { "index": { "analysis": { "analyzer": { "my_custom_analyzer": { "type": "custom", "tokenizer": "whitespace", "filter": [ "lowercase", "stop", "snowball" ] } } } } } }` ( my_index3 안에 whitespace 토큰크나이저 그리고 lowercase, stop, snowball 토큰필터를 사용하는 my_custom_analyzer 라는 이름의 애널라이저를 추가 )
+            * `PUT my_index3 { "settings": { "index": { "analysis": { "analyzer": { "my_custom_analyzer": { "type": "custom", "tokenizer": "whitespace", "filter": [ "lowercase", "stop", "snowball" ] } } } } } }` ( my_index3 안에 whitespace 토큰크나이저 그리고 lowercase, stop, snowball 토큰필터를 사용하는 my_custom_analyzer 라는 이름의 애널라이저를 추가 )
         * 텀 벡터 - _termvectors API
             * 색인된 도큐먼트의 역 인덱스의 내용을 확인할 때는 도큐먼트 별로 _termvectors API를이용해서 확인
             * `GET <인덱스>/_termvectors/<도큐먼트id>?fields=<필드명>` 형식으로 사용
