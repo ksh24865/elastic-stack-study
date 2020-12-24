@@ -4,7 +4,7 @@ Table of contents
 =================
 <!--ts-->
    * [ELK Stack](#1-elk-stack)
-   * [Elastic search](#2.1-elastic-search)
+   * [Elastic search](#2-.-1-elastic-search)
    * [Logstash](#2.2-Logstash)
    * [Kibana](#2.3-Kibana)
    * [Filterbeats](#2.4-Filterbeats)
@@ -18,7 +18,7 @@ Table of contents
  
 
 ## 2. ELK Stack의 구성요소
-2.1 Elastic search
+2 . 1 Elastic search
 ======
 * 기능
    * 확장성이 매우 좋은 오픈소스 검색엔진
