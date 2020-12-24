@@ -4,11 +4,11 @@ Table of contents
 =================
 <!--ts-->
    * [ELK Stack](#1_-elk-stack)
-   * [Elastic search](#2-.-1-elastic-search)
-   * [Logstash](#2.2-Logstash)
-   * [Kibana](#2.3-Kibana)
-   * [Filterbeats](#2.4-Filterbeats)
-   * [Kafka](#3.Kafka)
+   * [Elastic search](#2_1-elastic-search)
+   * [Logstash](#2_2-Logstash)
+   * [Kibana](#2_3-Kibana)
+   * [Filterbeats](#2_4-Filterbeats)
+   * [Kafka](#3_-Kafka)
 <!--te-->
 
 1_ ELK Stack
@@ -18,7 +18,7 @@ Table of contents
  
 
 ## 2. ELK Stack의 구성요소
-2 . 1 Elastic search
+2_1 Elastic search
 ======
 * 기능
    * 확장성이 매우 좋은 오픈소스 검색엔진
@@ -1000,7 +1000,7 @@ Table of contents
         `{ "message": "My favorite 슈퍼영웅 is Iron Man" }` 이라는 값을 입력하면 다음과 같이 3개의 역 색인이 생성
         <img width="450" alt="image (23)" src="https://user-images.githubusercontent.com/55729930/102539077-80abbf00-40f0-11eb-9f76-1a35ff466a05.png">
 
-2.2 Logstash
+2_2 Logstash
 ============
 * 기능
    * 오픈소스 서버측 데이터 수집 & 처리 파이프라인도구
@@ -1036,12 +1036,12 @@ Table of contents
       - json : JSON 형식의 데이터를 인코딩하거나 디코딩
       - multiline : 자바 예외 및 스택 추척 메시지와 같은 여러 줄 텍스트 이벤트를 단일 이벤트로 병합
 
-2.3 Kibana
+2_3 Kibana
 ============
 * 기능
    * 사용자 Application으로 Elastic Search에 저장된 정보들을 검색 및 분석하고 실시간으로 시각화하는 기능
    
-2.4 Filterbeats
+2_4 Filterbeats
 ============
 * 기능
    * 서버에 경량 에이전트로 설치되어 다양한 유형의 데이터를 Logstash 또는 ElasticSearch로 전송(스트리밍)하는 오픈 소스 데이터 발송자
@@ -1083,7 +1083,7 @@ Table of contents
         - 일단 노드에 장애가 발생하면 프라이머리와 동일한 데이터를 가지고 있는 레플리카 샤드가 순간적으로 프라이머리 샤드로 전환되어 서비스된다. 그와 동시에 프라이머리로 전환된 샤드의 레플리카가 다른 노드에서 새로 생성된다. 시간이 지나 장애가 복구되면 복구된 노드로 일부 샤드들이 네트워크를 통해 이동한다. 시간이 지남에 따라 클러스터에 균형이 맞추어진다.
         - 이러한 프로세스가 있기때문에 단일 샤드의 물리적 크기가 크다면 recovery 가 신속히 이루어지지 못할 위험이 있다.
 
-3.Kafka
+3_ Kafka
 ============
 
 1. 등장배경
