@@ -4,7 +4,7 @@ Table of contents
 =================
 <!--ts-->
    * [ELK Stack](#1-elk-stack)
-   * [Elastic search](#2-1-elastic-search)
+   * [Elastic search](#2.1-elastic-search)
    * [Logstash](#2.2-Logstash)
    * [Kibana](#2.3-Kibana)
    * [Filterbeats](#2.4-Filterbeats)
