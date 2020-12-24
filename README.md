@@ -1067,3 +1067,149 @@ Elastic-stack-study
     * 샤드의 크기가 어떻게 성능에 영향을 미치나요?
         - 일단 노드에 장애가 발생하면 프라이머리와 동일한 데이터를 가지고 있는 레플리카 샤드가 순간적으로 프라이머리 샤드로 전환되어 서비스된다. 그와 동시에 프라이머리로 전환된 샤드의 레플리카가 다른 노드에서 새로 생성된다. 시간이 지나 장애가 복구되면 복구된 노드로 일부 샤드들이 네트워크를 통해 이동한다. 시간이 지남에 따라 클러스터에 균형이 맞추어진다.
         - 이러한 프로세스가 있기때문에 단일 샤드의 물리적 크기가 크다면 recovery 가 신속히 이루어지지 못할 위험이 있다.
+
+## 3. Kafka
+
+1. 등장배경
+ * 초기 - 단방향 통신
+  <img width="240" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103045963-e0f7a080-45c9-11eb-9654-35df27a119d2.png">
+ 
+ * 후기 - 복잡한 데이터 통신
+  <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103045964-e1903700-45c9-11eb-889b-17a0b3058c47.png">
+ 
+ 
+ * 데이터를 전송하는 line이 복잡해짐
+  * 배포와 장애에 대응하기 어려워짐.
+  * 추후 데이터 포맷에 변경사항이 생기면 유지보수가 어려워짐.
+  * Protocol 포맷의 파편화가 심해짐.
+ * 이를 해결하기 위해 링크드인에서 내부적으로 개발한 오픈소스
+  <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103046311-25377080-45cb-11eb-953e-e95a1e9848de.png"> 
+  
+  
+2. Apache Kafka
+ * 카프카는 소스애플리케이션과 타겟애플리케이션의 커플링을 축소하기 위해 등장.
+ * source에서 보낼 수 있는 데이터 포맷에는 거의 제한이 없다.
+ <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103046377-50ba5b00-45cb-11eb-908a-3899520d9ce7.png"> 
+
+ 
+ * 카프카는 데이터를 담는 토픽의 큐라고 볼 수 있다.
+  * Producer - 큐에 데이터를 넣음.
+  * Consumer - 큐의 데이터를 가져감.
+ * Fault tolerant (고가용성)
+  * 서버에 이슈가 생기거나 갑자기 랙이 내려가는 등의 상황에서도 데이터를 손실없이 복구 가능
+  * 낮은 지연(latency), 높은 처리량(throuhput)으로 효과적으로 많은 데이터 처리 가능
+ * Topic
+ <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103046651-654b2300-45cc-11eb-8627-f6254e1b3c6a.png"> 
+  
+  
+  * Kafka에서 관리하는 data가 들어갈 수 있는 공간
+  * topic의 이름은 목적에 따라 어떤 데이터를 담는지 명시 -> 유지보수 시 편리.
+  * Topic내부 
+   * 하나의 토픽은 여러개의 파티션으로 구성됨.
+   * 하나의 파티션은 큐와 같이 끝에서 부터 데이터가 적재.
+   * Consumer는 데이터를 오래된 순(0,1,...)으로 가져감.
+   <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103046861-06d27480-45cd-11eb-86f5-14f197c7cdcf.png"> 
+
+   
+   * 더이상 데이터가 들어오지 않으면 다른 데이터 들어올 때 까지 대기.
+   * consumer가 데이터를 가져가도 데이터는 삭제되지 않아 동일한 데이터를 두 번 처리할 수 있다.
+   <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103047288-54031600-45ce-11eb-8517-0c625203759a.png"> 
+
+   
+   * 두개 이상의 partition
+    * Producer가 data를 보낼 때 key를 지정 가능 (key를 해싱하여 특정 파티션에 저장)
+   <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103047443-e3a8c480-45ce-11eb-9334-8ad0d12db3b6.png"> 
+   
+    * 파티션을 늘리면 consumer의 수를 늘려 데이터 처리를 분산시킬 수 있다.
+    * 파티션을 늘리는 것은 가능하나, 줄이는 것은 불가능
+    * 파티션을 추가하는 순간 키 - 파티션 간의 일관성이 보장되지 않는다.
+    * 파티션의 data 삭제
+     * 최대 저장 용량, 최대 저장 시간 옵션을 설정하여 이에 따라 적절히 삭제됨.
+ * Producer
+  * 데이터를 kafka에 보내는 객체
+   * 대량의 로그들을 실시간으로 kafka에 적재할 수 있다.
+   <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103047753-d3ddb000-45cf-11eb-8c8f-a98b76d3e135.png"> 
+   
+  
+  * 역할
+   * Topic에 해당하는 메시지 생성
+   * 특정 topic으로 data를 publish
+   * 전송 성공여부 확인후, 실패시 재시도
+ * Consumer
+    * Data를 Kafka로 부터 가져온다(polling)
+        * 읽힌 data는 사라지지 않는다.
+    * data pipeline의 특성을 갖는다.
+    * 역할
+        * Topic의 partiton으로부터 data polling
+        * Partition offset 위치 기록 (commit)
+        * Consumer group을 통해 병렬처리
+    * offset
+        * Topic과 partition별로 지정.
+        * Consumer가 데이터를 어느 지점까지 읽었는지 나타냄.
+        * Consumer가 데이터를 읽은 offset 정보는 kafka 내부에 저장 - consumer에 이슈가 발생하더라도 복구 가능
+        <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103048555-5a938c80-45d2-11eb-8c73-225c00e3b6da.png"> 
+        
+    
+    * multiple consumer
+        * #partition > #consumer
+            * consumer가 각각 1~n개의 partition을 맡아 데이터를 가져온다.
+        * #partition = #consumer
+            * consumer가 각각 1개씩 partition을 맡아 데이터를 가져온다.
+        * #partition < #consumer
+            * 일부 consumer는 partition을 할당받지 않아 동작하지 않는다.
+        <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103048793-22407e00-45d3-11eb-95b5-6d7976a30594.png"> 
+        
+    * Different groups
+        * Consumer group과 topic 별로 kafka에 consumer offset을 나누어 저장하여 각 consumer group이 타 consumer group에 영향을 끼치지 않고 개별적으로 처리할 수 있다.
+        <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103049089-0ee1e280-45d4-11eb-8839-e4e730171eeb.png"> 
+    
+    * kafka의 핵심요소
+        * kafka의 고가용성을 유지하는데에 중요한 역할을 한다.
+        * Broker
+            * Kafka가 설치되어있는 서버 단위 
+            * 보통 3개 이상 사용 권장
+            * 브로커가 3대라면 3대 중 1대에 해당 토픽의 data가 저장
+        * Replication
+            * 클러스터에서 서버에 장애가 생길 때, 가용성을 보장할 수 있다.
+            * Partition의 복제를 의미한다.
+            * Broker에 이슈가 발생해 사용 불가능해질 경우, 복제본을 통해 복구가능
+            <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103049559-6fbdea80-45d5-11eb-8442-55da54957dad.png"> 
+            
+        
+        * ISR (In Sync Replica)
+            * Leader partition(원본) + follower partition(복제본)
+    * Lag
+        * Producer의 데이터 삽입 속도가 Consumer가 데이터를 가져가는 속도보다 빠른 경우 발생
+        * Producer의 마지막 삽입 offset과 Consumer의 마지막 read offset간의 차이를 의미함.
+        <img width="250" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103050249-3dad8800-45d7-11eb-9ceb-eb696ea975d5.png"> 
+        
+        
+        * Partition의 개수가 여러개이면 lag도 여러개 존재 가능
+        * 가장 큰 lag을 records-lag-max라 함.
+        <img width="250" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103050489-c7f5ec00-45d7-11eb-91b4-8f4879fc831e.png"> 
+        
+        
+    * Burrow
+        * Consumer lag 모니터링을 도와주는 독립 애플리케이션
+        * 멀티 카프카 클러스터를 지원
+        * sliding window - consumer의 status 체크
+        * HTTP API를 통해 위의 정보를 제공
+        
+    * CMAK
+        * Kafka 클러스터 관리 tool
+        * 클러스터 상태를 검사하고 partition을 재할당하며, topic을 생성, 표시하는 등 management를 담당하고 있다.
+    * Coordination service
+        * 분산 시스템 설계시, 분산된 시스템간의 정보를 어떻게 공유할 것이며 클러스터에 있는 서버들의 상태를 체크하고, 분산 서비스들간의 동기화를 위한 락을 처리하는 방법 등이 문제가 된다.
+        * 위와 같은 문제를 해결하기 위해 Coordination service system이 존재하며, 대표적인 것이 zookeeper이다.
+    * zookeeper
+        * 디렉토리 형태의 데이터 저장소
+        * 분산되어 있는 각 application의 정보를 중앙에 집중하고 구성관리, 그룹 관리 네이밍, 동기화 등을 제공한다.
+        * 상태정보를 znode라는 곳에 key-value 형태로 저장한다.
+        * Znode에 저장된 key-value를 이용해 분산 application끼리 데이터를 주고받는다.
+        <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103051249-c0374700-45d9-11eb-872d-01b3ab34a8b2.png"> 
+       
+    * Znode
+        * 자식노드를 가진 계층형 구조
+        <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103051252-c1687400-45d9-11eb-8c67-fd9345c3b4e7.png"> 
+
+        
