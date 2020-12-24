@@ -3,7 +3,7 @@ Elastic-stack-study
 Table of contents
 =================
 <!--ts-->
-   * [ELK Stack](#1-elk-stack)
+   * [ELK Stack](#1_-elk-stack)
    * [Elastic search](#2-.-1-elastic-search)
    * [Logstash](#2.2-Logstash)
    * [Kibana](#2.3-Kibana)
@@ -11,7 +11,7 @@ Table of contents
    * [Kafka](#3.Kafka)
 <!--te-->
 
-1 ELK Stack
+1_ ELK Stack
 =======
  * 사용자가 서버나 데이터베이스로부터 원하는 데이터 및 로그를 실시간으로 수집하고 검색, 분석하여 시각화 시키는 오픈소스 서비스
  * Elastic Search + Logstash + Kibana + Filebeat
