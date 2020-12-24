@@ -3,7 +3,7 @@ Elastic-stack-study
 Table of contents
 =================
 <!--ts-->
-   * [ELK Stack](#1.ELK-Stack)
+   * [1.ELK Stack](#1.ELK-Stack)
    * [Elastic search](#2.1-Elastic-search)
    * [Logstash](#2.2-Logstash)
    * [Kibana](#2.3-Kibana)
