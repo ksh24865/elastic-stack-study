@@ -8,7 +8,7 @@ Table of contents
    * [Logstash](###2.2-Logstash)
    * [Kibana](###2.3-Kibana)
    * [Filterbeats](###2.4-Filterbeats)
-   * [Kafka](##3.-Kafka)
+   * [Kafka](##Kafka)
 <!--te-->
 
 ## 1. ELK Stack
