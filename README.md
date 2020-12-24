@@ -1,5 +1,15 @@
 Elastic-stack-study
 ====
+Table of contents
+=================
+<!--ts-->
+   * [ELK Stack](###1.-ELK-Stack)
+   * [Elastic search](###2.1-Elastic-search)
+   * [Logstash](###2.2-Logstash)
+   * [Kibana](###2.3-Kibana)
+   * [Filterbeats](###2.4-Filterbeats)
+   * [Kafka](##3.-Kafka)
+<!--te-->
 
 ## 1. ELK Stack
  * 사용자가 서버나 데이터베이스로부터 원하는 데이터 및 로그를 실시간으로 수집하고 검색, 분석하여 시각화 시키는 오픈소스 서비스
@@ -1068,7 +1078,8 @@ Elastic-stack-study
         - 일단 노드에 장애가 발생하면 프라이머리와 동일한 데이터를 가지고 있는 레플리카 샤드가 순간적으로 프라이머리 샤드로 전환되어 서비스된다. 그와 동시에 프라이머리로 전환된 샤드의 레플리카가 다른 노드에서 새로 생성된다. 시간이 지나 장애가 복구되면 복구된 노드로 일부 샤드들이 네트워크를 통해 이동한다. 시간이 지남에 따라 클러스터에 균형이 맞추어진다.
         - 이러한 프로세스가 있기때문에 단일 샤드의 물리적 크기가 크다면 recovery 가 신속히 이루어지지 못할 위험이 있다.
 
-## 3. Kafka
+Kafka
+===========
 
 1. 등장배경
  * 초기 - 단방향 통신
@@ -1115,16 +1126,15 @@ Elastic-stack-study
    * consumer가 데이터를 가져가도 데이터는 삭제되지 않아 동일한 데이터를 두 번 처리할 수 있다.
    <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103047288-54031600-45ce-11eb-8517-0c625203759a.png"> 
 
-   
    * 두개 이상의 partition
-    * Producer가 data를 보낼 때 key를 지정 가능 (key를 해싱하여 특정 파티션에 저장)
-   <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103047443-e3a8c480-45ce-11eb-9334-8ad0d12db3b6.png"> 
-   
-    * 파티션을 늘리면 consumer의 수를 늘려 데이터 처리를 분산시킬 수 있다.
-    * 파티션을 늘리는 것은 가능하나, 줄이는 것은 불가능
-    * 파티션을 추가하는 순간 키 - 파티션 간의 일관성이 보장되지 않는다.
-    * 파티션의 data 삭제
-     * 최대 저장 용량, 최대 저장 시간 옵션을 설정하여 이에 따라 적절히 삭제됨.
+    * Producer가 data를 보낼 때 key를 지정 가능 (key를 해싱하여 특정 파티션에 저장)   
+    <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103047443-e3a8c480-45ce-11eb-9334-8ad0d12db3b6.png"> 
+ 
+   * 파티션을 늘리면 consumer의 수를 늘려 데이터 처리를 분산시킬 수 있다.
+   * 파티션을 늘리는 것은 가능하나, 줄이는 것은 불가능
+   * 파티션을 추가하는 순간 키 - 파티션 간의 일관성이 보장되지 않는다.
+   * 파티션의 data 삭제
+    * 최대 저장 용량, 최대 저장 시간 옵션을 설정하여 이에 따라 적절히 삭제됨.
  * Producer
   * 데이터를 kafka에 보내는 객체
    * 대량의 로그들을 실시간으로 kafka에 적재할 수 있다.
