@@ -1095,9 +1095,9 @@ Table of contents
  
  
  * 데이터를 전송하는 line이 복잡해짐
-  * 배포와 장애에 대응하기 어려워짐.
-  * 추후 데이터 포맷에 변경사항이 생기면 유지보수가 어려워짐.
-  * Protocol 포맷의 파편화가 심해짐.
+    * 배포와 장애에 대응하기 어려워짐.
+    * 추후 데이터 포맷에 변경사항이 생기면 유지보수가 어려워짐.
+    * Protocol 포맷의 파편화가 심해짐.
  * 이를 해결하기 위해 링크드인에서 내부적으로 개발한 오픈소스
   <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103046311-25377080-45cb-11eb-953e-e95a1e9848de.png"> 
   
@@ -1109,11 +1109,11 @@ Table of contents
 
  
  * 카프카는 데이터를 담는 토픽의 큐라고 볼 수 있다.
-  * Producer - 큐에 데이터를 넣음.
-  * Consumer - 큐의 데이터를 가져감.
+    * Producer - 큐에 데이터를 넣음.
+    * Consumer - 큐의 데이터를 가져감.
  * Fault tolerant (고가용성)
-  * 서버에 이슈가 생기거나 갑자기 랙이 내려가는 등의 상황에서도 데이터를 손실없이 복구 가능
-  * 낮은 지연(latency), 높은 처리량(throuhput)으로 효과적으로 많은 데이터 처리 가능
+    * 서버에 이슈가 생기거나 갑자기 랙이 내려가는 등의 상황에서도 데이터를 손실없이 복구 가능
+    * 낮은 지연(latency), 높은 처리량(throuhput)으로 효과적으로 많은 데이터 처리 가능
  * Topic
  <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103046651-654b2300-45cc-11eb-8627-f6254e1b3c6a.png"> 
   
@@ -1121,9 +1121,9 @@ Table of contents
   * Kafka에서 관리하는 data가 들어갈 수 있는 공간
   * topic의 이름은 목적에 따라 어떤 데이터를 담는지 명시 -> 유지보수 시 편리.
   * Topic내부 
-   * 하나의 토픽은 여러개의 파티션으로 구성됨.
-   * 하나의 파티션은 큐와 같이 끝에서 부터 데이터가 적재.
-   * Consumer는 데이터를 오래된 순(0,1,...)으로 가져감.
+    * 하나의 토픽은 여러개의 파티션으로 구성됨.
+    * 하나의 파티션은 큐와 같이 끝에서 부터 데이터가 적재.
+    * Consumer는 데이터를 오래된 순(0,1,...)으로 가져감.
    <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103046861-06d27480-45cd-11eb-86f5-14f197c7cdcf.png"> 
 
    
@@ -1133,23 +1133,23 @@ Table of contents
 
    * 두개 이상의 partition
     * Producer가 data를 보낼 때 key를 지정 가능 (key를 해싱하여 특정 파티션에 저장)   
-    <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103047443-e3a8c480-45ce-11eb-9334-8ad0d12db3b6.png"> 
+    <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103047443-e3a8c480-45ce-11eb-9334-8ad0d12db3b6.png"> <br/>
+    * 파티션을 늘리면 consumer의 수를 늘려 데이터 처리를 분산시킬 수 있다.
+    * 파티션을 늘리는 것은 가능하나, 줄이는 것은 불가능
+    * 파티션을 추가하는 순간 키 - 파티션 간의 일관성이 보장되지 않는다.
  
-   * 파티션을 늘리면 consumer의 수를 늘려 데이터 처리를 분산시킬 수 있다.
-   * 파티션을 늘리는 것은 가능하나, 줄이는 것은 불가능
-   * 파티션을 추가하는 순간 키 - 파티션 간의 일관성이 보장되지 않는다.
    * 파티션의 data 삭제
-    * 최대 저장 용량, 최대 저장 시간 옵션을 설정하여 이에 따라 적절히 삭제됨.
+        * 최대 저장 용량, 최대 저장 시간 옵션을 설정하여 이에 따라 적절히 삭제됨.
  * Producer
-  * 데이터를 kafka에 보내는 객체
-   * 대량의 로그들을 실시간으로 kafka에 적재할 수 있다.
+    * 데이터를 kafka에 보내는 객체
+    * 대량의 로그들을 실시간으로 kafka에 적재할 수 있다.
    <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103047753-d3ddb000-45cf-11eb-8c8f-a98b76d3e135.png"> 
    
   
   * 역할
-   * Topic에 해당하는 메시지 생성
-   * 특정 topic으로 data를 publish
-   * 전송 성공여부 확인후, 실패시 재시도
+    * Topic에 해당하는 메시지 생성
+    * 특정 topic으로 data를 publish
+    * 전송 성공여부 확인후, 실패시 재시도
  * Consumer
     * Data를 Kafka로 부터 가져온다(polling)
         * 읽힌 data는 사라지지 않는다.
