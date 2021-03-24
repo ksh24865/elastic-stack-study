@@ -1024,6 +1024,133 @@ Table of contents
     * 샤드의 크기가 어떻게 성능에 영향을 미치나요?
         - 일단 노드에 장애가 발생하면 프라이머리와 동일한 데이터를 가지고 있는 레플리카 샤드가 순간적으로 프라이머리 샤드로 전환되어 서비스된다. 그와 동시에 프라이머리로 전환된 샤드의 레플리카가 다른 노드에서 새로 생성된다. 시간이 지나 장애가 복구되면 복구된 노드로 일부 샤드들이 네트워크를 통해 이동한다. 시간이 지남에 따라 클러스터에 균형이 맞추어진다.
         - 이러한 프로세스가 있기때문에 단일 샤드의 물리적 크기가 크다면 recovery 가 신속히 이루어지지 못할 위험이 있다.
+* 요일 및 시간 
+```
+GET smart_park/_mapping
+{
+  "query": {
+    "match_all": {}
+  }
+}
+GET smart_park2/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+GET smart_park/_search
+{
+  "script_fields": {
+    "hour_of_day": {
+      "script":{
+        "lang": "painless",
+        "source":"doc['time'].value.getHour()"
+      }
+    }
+  }
+}
+GET smart_park/_search
+{
+  "script_fields": {
+    "hour_of_day": {
+      "script":{
+        "lang": "painless",
+        "source":"""
+def ts=doc['time'];
+def cal=Calendar.getInstance();
+cal.setTime(ts);
+def dowNum=cal.get(Calendar.DAY_OF_WEEK);
+return dowNum
+"""
+      }
+    }
+  }
+}
+
+PUT _ingest/pipeline/hour
+{
+  "description": "add hour_of_day and day_of_week field from @timestamp",
+  "processors": [
+    {
+      "script":{
+        "lang": "painless",
+        "source":"""
+def ts=ctx['time'];
+def sdf=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+def date=sdf.parse(ts);
+def cal=Calendar.getInstance();
+cal.setTime(date);
+
+ctx.hour_of_day = cal.get(Calendar.HOUR_OF_DAY);
+
+def dowNum=cal.get(Calendar.DAY_OF_WEEK);
+def dowEn=['t','SUN','MON','TUE','Wed','Thu','Fri','Sat'][dowNum];
+def dowKr=['t','일','월','화','수','목','금','토'][dowNum];
+
+ctx.day_of_week = ["num":dowNum, "en":"downEn","kr":dowKr]
+"""
+      }
+    }
+  ]
+}
+
+POST _reindex
+{
+  "source": {
+    "index": "smart_park"
+  },
+  "dest": {
+    "index": "smart_park2",
+    "pipeline": "hour"
+  }
+}
+PUT /smart_park2
+{
+  "settings" : {
+        "number_of_shards" : 1
+    },
+    "mappings" : {
+      "properties" : {
+        "dust" : {
+          "type" : "float"
+        },
+        "humid" : {
+          "type" : "float"
+        },
+        "lux" : {
+          "type" : "float"
+        },
+        "name" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "shumid" : {
+          "type" : "float"
+        },
+        "temper" : {
+          "type" : "float"
+        },
+        "time" : {
+          "type" : "date"
+        },
+        "trash" : {
+          "type" : "float"
+        },
+        "udust" : {
+          "type" : "float"
+        },
+        "visitor" : {
+          "type" : "integer"
+        }
+      }
+    }
+}
+```
 
 2_2 Logstash
 ============
