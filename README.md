@@ -1260,8 +1260,8 @@ PUT /smart_park2
    <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103047288-54031600-45ce-11eb-8517-0c625203759a.png"> 
 
    * 두개 이상의 partition
+   * <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103047443-e3a8c480-45ce-11eb-9334-8ad0d12db3b6.png"> <br/>
     * Producer가 data를 보낼 때 key를 지정 가능 (key를 해싱하여 특정 파티션에 저장)   
-    <img width="500" alt="image (3)" src="https://user-images.githubusercontent.com/55729930/103047443-e3a8c480-45ce-11eb-9334-8ad0d12db3b6.png"> <br/>
     * 파티션을 늘리면 consumer의 수를 늘려 데이터 처리를 분산시킬 수 있다.
     * 파티션을 늘리는 것은 가능하나, 줄이는 것은 불가능
     * 파티션을 추가하는 순간 키 - 파티션 간의 일관성이 보장되지 않는다.
